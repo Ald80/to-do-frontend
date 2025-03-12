@@ -1,35 +1,64 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React, { Component, useState } from "react";
+import RenderItems from './RenderItems';
+import RenderTabList from './RenderTabList';
 
-function App() {
-  const [count, setCount] = useState(0)
+const todoItems = [
+  {
+    id: 1,
+    title: "Go to Market",
+    description: "Buy ingredients to prepare dinner",
+    completed: true,
+  },
+  {
+    id: 2,
+    title: "Study",
+    description: "Read Algebra and History textbook for the upcoming test",
+    completed: false,
+  },
+  {
+    id: 3,
+    title: "Sammy's books",
+    description: "Go to library to return Sammy's books",
+    completed: true,
+  },
+  {
+    id: 4,
+    title: "Article",
+    description: "Write article on how to use Django with React",
+    completed: false,
+  },
+];
+
+export default function App() {
+  const [viewCompleted, setViewCompleted] = useState(false);
+  const [todoList, setTodoList] = useState(todoItems);
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+      <main className='container'>
+        <h1 className='text-white text-uppercase text-center my-4'>
+          Todo app
+        </h1>
+        <div className='row'>
+          <div className='col-md-6 col-sm-10 mx-auto p-0'>
+            <div className='card p-3'>
+              <div className='mb-4'>
+                <button className='btn' style={{ backgroundColor: 'purple', color: 'white' }}>
+                  Add task
+                </button>
+              </div>
+              <RenderTabList
+                setViewCompleted={setViewCompleted}
+                viewCompleted={viewCompleted}
+              />  
+              <ul className='list-group list-group-flush border-top-0'>
+                <RenderItems 
+                  todoList={todoList}
+                  viewCompleted={viewCompleted}
+                />
+              </ul>
+            </div>
+          </div>
+        </div>
+      </main>
+  );
 }
-
-export default App
