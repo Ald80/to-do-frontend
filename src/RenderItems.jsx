@@ -1,8 +1,8 @@
 import React from 'react';
 
-export default function RenderItems ({viewCompleted, todoList}) {
-    const newItems = todoList.filter(
-        (item) => item.completed == viewCompleted
+export default function RenderItems ({ renderItems }) {
+    const newItems = renderItems.todoList.filter(
+        (item) => item.completed == renderItems.viewCompleted
     );
 
     return newItems.map((item) => (
@@ -12,7 +12,7 @@ export default function RenderItems ({viewCompleted, todoList}) {
         >
             <span
                 className={`todo-title mr-2 ${
-                    viewCompleted ? 'completed-todo' : ''    
+                    renderItems.viewCompleted ? 'completed-todo' : ''    
                 }`}
                 title={item.description}
             >
@@ -21,11 +21,13 @@ export default function RenderItems ({viewCompleted, todoList}) {
             <span>
                 <button
                   className='btn btn-secondary me-2'
+                  onClick={() => renderItems.editItem(item)}
                 >
                   Edit
                 </button>
                 <button
                   className='btn btn-danger'
+                  onClick={() => renderItems.handleDelete(item)}
                 >
                   Delete
                 </button>

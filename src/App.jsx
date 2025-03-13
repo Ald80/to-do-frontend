@@ -1,6 +1,7 @@
 import React, { Component, useState } from "react";
 import RenderItems from './RenderItems';
 import RenderTabList from './RenderTabList';
+import CustomModal from "./CustomModal";
 
 const todoItems = [
   {
@@ -32,7 +33,43 @@ const todoItems = [
 export default function App() {
   const [viewCompleted, setViewCompleted] = useState(false);
   const [todoList, setTodoList] = useState(todoItems);
+  const [modal, setModal] = useState(false);
+  const [activeItem, setActiveItem] = useState({
+    title: "",
+    description: "",
+    completed: false,
+  });
 
+  const toggle = () => {
+    setModal(!modal);
+  }
+
+  const handleSubmit = (item) => {
+    toggle();
+    alert("save" + JSON.stringify(item));
+  }
+
+  const handleDelete = (item) => {
+    alert("delete" + JSON.stringify(item));
+  }
+
+  const createItem = () => {
+    const item = { title: "", description: "", completed: false };
+    setActiveItem(item);
+    setModal(!modal);
+  }
+
+  const editItem = (item) => {
+    setActiveItem(item);
+    setModal(!modal);
+  }
+
+  const renderItems = { 
+    viewCompleted: viewCompleted, 
+    todoList: todoList,   
+    editItem: editItem,  
+    handleDelete: handleDelete,
+  }
   return (
       <main className='container'>
         <h1 className='text-white text-uppercase text-center my-4'>
@@ -42,7 +79,11 @@ export default function App() {
           <div className='col-md-6 col-sm-10 mx-auto p-0'>
             <div className='card p-3'>
               <div className='mb-4'>
-                <button className='btn' style={{ backgroundColor: 'purple', color: 'white' }}>
+                <button 
+                  className='btn' 
+                  style={{ backgroundColor: 'purple', color: 'white' }}
+                  onClick={createItem}
+                >
                   Add task
                 </button>
               </div>
@@ -52,13 +93,20 @@ export default function App() {
               />  
               <ul className='list-group list-group-flush border-top-0'>
                 <RenderItems 
-                  todoList={todoList}
-                  viewCompleted={viewCompleted}
+                  renderItems={renderItems}
                 />
               </ul>
             </div>
           </div>
         </div>
+        {modal ? (
+          <CustomModal 
+            activeItem={activeItem}
+            setActiveItem={setActiveItem}
+            toggle={toggle}
+            onSave={handleSubmit}
+          />
+          ): null}
       </main>
   );
 }
