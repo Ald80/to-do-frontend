@@ -1,44 +1,30 @@
-import React, { Component, useState } from "react";
+import React, { useEffect, useState } from "react";
 import RenderItems from './RenderItems';
 import RenderTabList from './RenderTabList';
 import CustomModal from "./CustomModal";
-
-const todoItems = [
-  {
-    id: 1,
-    title: "Go to Market",
-    description: "Buy ingredients to prepare dinner",
-    completed: true,
-  },
-  {
-    id: 2,
-    title: "Study",
-    description: "Read Algebra and History textbook for the upcoming test",
-    completed: false,
-  },
-  {
-    id: 3,
-    title: "Sammy's books",
-    description: "Go to library to return Sammy's books",
-    completed: true,
-  },
-  {
-    id: 4,
-    title: "Article",
-    description: "Write article on how to use Django with React",
-    completed: false,
-  },
-];
+import axios from "axios";
 
 export default function App() {
   const [viewCompleted, setViewCompleted] = useState(false);
-  const [todoList, setTodoList] = useState(todoItems);
+  const [todoList, setTodoList] = useState([]);
   const [modal, setModal] = useState(false);
-  const [activeItem, setActiveItem] = useState({
-    title: "",
-    description: "",
-    completed: false,
-  });
+  const [activeItem, setActiveItem] = useState({});
+
+  useEffect(() => {
+    const getData = async () => {
+      await refreshList();
+    }
+
+    getData();
+  }, [])
+
+  const refreshList = async () => {
+    axios.get('/api/todos/')
+    .then((res) => {
+      setTodoList(res.data)
+    })
+    .catch((err) => console.log(err));
+  }
 
   const toggle = () => {
     setModal(!modal);
@@ -46,11 +32,23 @@ export default function App() {
 
   const handleSubmit = (item) => {
     toggle();
+
+    if (item.id) {
+      axios
+        .put(`api/todos/${item.id}/`, item)
+        .then(() => refreshList());
+      return;
+    }
+    axios
+      .post("/api/todos/", item)
+      .then(() => refreshList());
     alert("save" + JSON.stringify(item));
   }
 
   const handleDelete = (item) => {
-    alert("delete" + JSON.stringify(item));
+    axios
+      .delete(`/api/todos/${item.id}/`) 
+      .then(() => refreshList());
   }
 
   const createItem = () => {
